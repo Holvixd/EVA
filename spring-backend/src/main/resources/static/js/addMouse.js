@@ -16,7 +16,6 @@ class MouseForm extends React.Component {
         event.preventDefault();
         var frm = $(document.myform);
         var data = getFormData(frm);
-        console.log(data);
 
         fetch('http://localhost:8080/mouse', {
             method: 'POST',
@@ -27,7 +26,6 @@ class MouseForm extends React.Component {
             mode: "cors"
         })
 
-        console.log(JSON.stringify(data).length);
     }
 
     render() {
@@ -44,6 +42,9 @@ class MouseForm extends React.Component {
             <br/>
             Buttons:<br/>
         <input type="number" name="buttons" defaultValue="6"/>
+            <br/>
+            Quantity:<br/>
+        <input type="number" name="quantity" defaultValue="10"/>
             <br/>
             Wireless:<br/>
         <input type="checkbox" name="wireless"/>

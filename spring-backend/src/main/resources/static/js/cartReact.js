@@ -6,6 +6,22 @@ var MainBox  = React.createClass({
     }
 });
 
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
 var App = React.createClass({
     //setting up initial state
     getInitialState:function(){
@@ -14,7 +30,7 @@ var App = React.createClass({
         };
     },
     componentDidMount(){
-        this.getDataFromServer('http://localhost:8080/showShoppingCart');
+        this.getDataFromServer('http://localhost:8080/showShoppingCartWithItems/'+getCookie("cart").substring(1));
     },
     //showResult Method
     showResult: function(response) {
@@ -24,17 +40,21 @@ var App = React.createClass({
     },
     //making ajax call to get data from server
     getDataFromServer:function(URL){
-        $.ajax({
-            type:"GET",
-            dataType:"json",
-            url: URL,
-            success: function(response) {
-                this.showResult(response);
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+        if(getCookie("cart").substring(0,1)===","){
+            $.ajax({
+                    type:"GET",
+                    dataType:"json",
+                    //data: getCookie("cart").substring(1),
+                    url: URL,
+                    success: function(response) {
+                        this.showResult(response);
+                    }.bind(this),
+                    error: function(xhr, status, err) {
+                        console.error(this.props.url, status, err.toString());
+                    }.bind(this)
+                });
+        }
+
     },
     render:function(){
         return(
@@ -52,8 +72,10 @@ var Result = React.createClass({
         });
         return(
             <div className="container">
+            <div className="col-md-9">
             <div className="row">
             {result}
+            </div>
             </div>
             </div>
         );
@@ -62,20 +84,61 @@ var Result = React.createClass({
 class ResultItem extends React.Component{
     constructor(props){
         super(props);
+        this.removeFromCart = this.removeFromCart.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(event){
+        var now = new Date();
+        now.setMonth( now.getMonth() + 1 );
+        document.cookie = "item="+this.props.user.id;
+        document.cookie = "expires="+now.toUTCString();
+        document.cookie = "path=/";
+        window.location.replace("showitem.html");
+    }
+    removeFromCart(event){
+        event.preventDefault();
+        var x = getCookie("cart");
+        if(x.includes(this.props.user.id)){
+            x = x.replace(","+this.props.user.id, '');
+            var now = new Date();
+            now.setMonth( now.getMonth() + 1 );
+            document.cookie = "cart="+x;
+            document.cookie = "expires="+now.toUTCString();
+            document.cookie = "path=/";
+            location.reload();
+        }
 
     }
 
     render(){
         var camper = this.props.user;
+        var link = "http://localhost:8080/items/"+camper.id;
+        const divStyle = {
+            padding: 20 + 'px',
+        };
+        const mainDiv = {
+            marginBottom: 30 + 'px',
+        };
+        const imageWrapper = {
+            width: 200 + 'px',
+            height: 200 + 'px',
+        };
         return(
-            <div className="col-xs-6 col-sm-4 col-md-3">
-            <div className="item">
-            <div className="col-xs-12"><h3>{camper.name}</h3></div>
-        <div className="col-xs-12"><img src={camper.picture} /></div>
-        <div className="col-xs-12"><p>Hinta:&nbsp;{camper.price}</p></div>
-        <div className="col-xs-12"><p>Paino:&nbsp;{camper.weight}</p></div>
-        </div>
-        </div>
+           <div className="col-sm-4 col-lg-4 col-md-4" style={mainDiv}>
+                        <div className="thumbnail" style={divStyle}>
+                <div style={imageWrapper}>
+                        <img src={camper.picture} alt=""></img></div>
+                            <div className="caption">
+                                <h4 className="pull-right">{camper.price} €</h4>
+                                <br></br>
+                                <h4><a href="#" onClick={this.handleClick}>{camper.name}</a>
+                                </h4>
+                                <p>This is a short description. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            </div>
+                            <button id="checkoutbutton" onClick={this.removeFromCart}>Remove from cart</button>
+                        </div>
+                    </div>
     );
     }
 }

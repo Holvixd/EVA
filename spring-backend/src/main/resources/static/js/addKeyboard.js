@@ -16,7 +16,6 @@ class KeyboardForm extends React.Component {
         event.preventDefault();
         var frm = $(document.myform);
         var data = getFormData(frm);
-        console.log(data);
         fetch('http://localhost:8080/keyboard', {
             method: 'POST',
             headers: {
@@ -26,7 +25,6 @@ class KeyboardForm extends React.Component {
             mode: "cors"
         })
 
-        console.log(JSON.stringify(data).length);
     }
 
     render() {
@@ -46,6 +44,9 @@ class KeyboardForm extends React.Component {
             <br/>
             Wireless:<br/>
         <input type="checkbox" name="wireless"/>
+            <br/>
+            Quantity:<br/>
+        <input type="number" name="quantity" defaultValue="10"/>
             <br/>
             Picture:<br/>
         <input type="text" name="picture" defaultValue="http://www.novelupdates.com/img/noimagefound.jpg"/>

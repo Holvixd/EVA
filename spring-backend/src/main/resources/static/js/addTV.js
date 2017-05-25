@@ -12,11 +12,10 @@ class TVForm extends React.Component {
     }
 
     handleSubmit(event) {
-        alert('A computer was submitted: ');
+        alert('A TV was submitted: ');
         event.preventDefault();
         var frm = $(document.myform);
         var data = getFormData(frm);
-        console.log(data);
 
         fetch('http://localhost:8080/tv', {
             method: 'POST',
@@ -27,7 +26,6 @@ class TVForm extends React.Component {
             mode: "cors"
         })
 
-        console.log(JSON.stringify(data).length);
 
     }
 
@@ -60,6 +58,9 @@ class TVForm extends React.Component {
             <br/>
             Weight:<br/>
         <input type="number" name="weight" defaultValue="15.65"/>
+            <br/>
+            Quantity:<br/>
+        <input type="number" name="quantity" defaultValue="10"/>
             <br/>
             Picture:<br/>
         <input type="text" name="picture" defaultValue="https://images.jimms.fi/product/1/4/141015-p174303.jpg"/>

@@ -16,7 +16,6 @@ class ConsoleForm extends React.Component {
         event.preventDefault();
         var frm = $(document.myform);
         var data = getFormData(frm);
-        console.log(data);
 
         fetch('http://localhost:8080/console', {
             method: 'POST',
@@ -27,7 +26,6 @@ class ConsoleForm extends React.Component {
             mode: "cors"
         })
 
-        console.log(JSON.stringify(data).length);
     }
 
     render() {
@@ -44,6 +42,9 @@ class ConsoleForm extends React.Component {
             <br/>
             Memory (GB):<br/>
         <input type="number" name="memory" defaultValue="1000"/>
+            <br/>
+            Quantity:<br/>
+        <input type="number" name="quantity" defaultValue="10"/>
             <br/>
             Picture:<br/>
         <input type="text" name="picture" defaultValue="http://www.novelupdates.com/img/noimagefound.jpg"/>
